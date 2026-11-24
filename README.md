@@ -4,6 +4,8 @@
 
 La aplicación funciona sin conexión a internet y no usa librerías externas: todo el cálculo, el dibujo y la interfaz están escritos en HTML, CSS y JavaScript puro.
 
+**Demo en línea:** <https://juandaniel3108.github.io/gaus-jordan/>
+
 ![Módulo de sistemas 2×2 resolviendo el ejercicio 1](docs/cp1-unica.jpg)
 
 ---
