@@ -1,0 +1,11 @@
+{
+  "name": "algebra-visual",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Laboratorio visual de álgebra lineal: sistemas, Gauss, vectores y producto cruz.",
+  "scripts": {
+    "test": "node --test tests/core.test.js",
+    "serve": "python3 -m http.server 8080"
+  }
+}

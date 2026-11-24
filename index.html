@@ -1,0 +1,500 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#eef0eb">
+  <meta name="description" content="Laboratorio visual de álgebra lineal: sistemas 2×2 y 3×3 por Gauss, vectores en R² y R³, producto punto y producto cruz, con procedimiento y gráficas.">
+  <title>Álgebra Visual · Laboratorio de álgebra lineal</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%2316211d'/%3E%3Cpath d='M8 22 16 7l8 15M10 22h12' fill='none' stroke='%23eef0eb' stroke-width='2'/%3E%3Ccircle cx='16' cy='18' r='2.2' fill='%23e0a03c'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Saltar al contenido</a>
+
+  <div class="page">
+    <header class="masthead">
+      <a class="brand" href="#main" aria-label="Álgebra Visual, ir al contenido">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 34 34" fill="none">
+            <path d="M5 25 17 5l12 20" stroke="currentColor" stroke-width="1.7"/>
+            <path d="M8 25h18" stroke="currentColor" stroke-width="1.7"/>
+            <path d="M8 18h18" stroke="currentColor" stroke-width="1" opacity=".45"/>
+            <circle cx="17" cy="15.5" r="2.6" fill="#e0a03c"/>
+          </svg>
+        </span>
+        <span class="brand-copy">
+          <span class="brand-name">Álgebra Visual</span>
+          <span class="brand-tag">Laboratorio de álgebra lineal</span>
+        </span>
+      </a>
+      <div class="course">
+        <span class="course-code">CIAF · Pereira</span>
+        <span class="course-line">Desarrollo de Software · 2026-2</span>
+      </div>
+    </header>
+
+    <nav class="module-rail" aria-label="Módulos del laboratorio">
+      <div class="rail-inner" role="tablist" aria-label="Módulos">
+        <button class="module-tab" id="tab-sistema2" role="tab" aria-selected="true" aria-controls="panel-sistema2" data-module="sistema2" tabindex="0">
+          <svg class="tab-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 18 21 6M3 6l18 12" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="2.1" fill="currentColor"/></svg>
+          <span class="tab-text"><span class="tab-name">Sistema 2×2</span><span class="tab-sub">Rectas y punto de corte</span></span>
+        </button>
+        <button class="module-tab" id="tab-sistema3" role="tab" aria-selected="false" aria-controls="panel-sistema3" data-module="sistema3" tabindex="-1">
+          <svg class="tab-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8.5 12 4l8 4.5-8 4.5-8-4.5ZM4 15l8 4.5 8-4.5M4 11.7 12 16l8-4.3" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>
+          <span class="tab-text"><span class="tab-name">Sistema 3×3</span><span class="tab-sub">Gauss y planos</span></span>
+        </button>
+        <button class="module-tab" id="tab-vectores2" role="tab" aria-selected="false" aria-controls="panel-vectores2" data-module="vectores2" tabindex="-1">
+          <svg class="tab-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19 18 6M18 6h-6M18 6v6" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M4 19h14" stroke="currentColor" stroke-width="1.1" opacity=".45"/></svg>
+          <span class="tab-text"><span class="tab-name">Vectores 2D</span><span class="tab-sub">Suma, norma y ángulo</span></span>
+        </button>
+        <button class="module-tab" id="tab-vectores3" role="tab" aria-selected="false" aria-controls="panel-vectores3" data-module="vectores3" tabindex="-1">
+          <svg class="tab-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 21 8v8l-9 5-9-5V8l9-5Z" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M12 12v9M12 12l9-4M12 12 3 8" stroke="currentColor" stroke-width="1.1" opacity=".5"/></svg>
+          <span class="tab-text"><span class="tab-name">Vectores 3D</span><span class="tab-sub">Flechas que se orbitan</span></span>
+        </button>
+        <button class="module-tab" id="tab-cruz" role="tab" aria-selected="false" aria-controls="panel-cruz" data-module="cruz" tabindex="-1">
+          <svg class="tab-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20 14 10M14 10h-5M14 10v5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M9 4v7h7" fill="none" stroke="currentColor" stroke-width="1.4" opacity=".6"/><path d="M4 20 9 4" stroke="currentColor" stroke-width="1.1" opacity=".45"/></svg>
+          <span class="tab-text"><span class="tab-name">Producto cruz</span><span class="tab-sub">Perpendicular y áreas</span></span>
+        </button>
+      </div>
+    </nav>
+
+    <main id="main">
+      <!-- ================= SISTEMA 2×2 ================= -->
+      <section class="module-panel" id="panel-sistema2" role="tabpanel" aria-labelledby="tab-sistema2">
+        <div class="workbench">
+          <aside class="control-card">
+            <div class="control-head">
+              <p class="eyebrow">Entrada · 2 ecuaciones</p>
+              <h1>Sistema 2×2</h1>
+              <p class="lede">Escribe los coeficientes. El programa elimina, clasifica y dibuja las dos rectas con su punto de corte.</p>
+            </div>
+
+            <form id="form-sistema2" novalidate>
+              <div class="equation-block">
+                <div class="equation-top"><span class="equation-name">Ecuación 1</span><span class="equation-preview" data-preview="sistema2-1">2x + 3y = 12</span></div>
+                <div class="coef-row">
+                  <label class="coef"><input id="s2-a1" name="a1" value="2" inputmode="decimal" autocomplete="off" aria-label="Coeficiente de x en la ecuación 1"><span class="coef-var">x</span></label>
+                  <span class="coef-op">+</span>
+                  <label class="coef"><input id="s2-b1" name="b1" value="3" inputmode="decimal" autocomplete="off" aria-label="Coeficiente de y en la ecuación 1"><span class="coef-var">y</span></label>
+                  <span class="coef-op">=</span>
+                  <label class="coef coef-total"><input id="s2-c1" name="c1" value="12" inputmode="decimal" autocomplete="off" aria-label="Término independiente de la ecuación 1"><span class="coef-var">c</span></label>
+                </div>
+              </div>
+              <div class="equation-block">
+                <div class="equation-top"><span class="equation-name">Ecuación 2</span><span class="equation-preview" data-preview="sistema2-2">4x − y = 10</span></div>
+                <div class="coef-row">
+                  <label class="coef"><input id="s2-a2" name="a2" value="4" inputmode="decimal" autocomplete="off" aria-label="Coeficiente de x en la ecuación 2"><span class="coef-var">x</span></label>
+                  <span class="coef-op">+</span>
+                  <label class="coef"><input id="s2-b2" name="b2" value="-1" inputmode="decimal" autocomplete="off" aria-label="Coeficiente de y en la ecuación 2"><span class="coef-var">y</span></label>
+                  <span class="coef-op">=</span>
+                  <label class="coef coef-total"><input id="s2-c2" name="c2" value="10" inputmode="decimal" autocomplete="off" aria-label="Término independiente de la ecuación 2"><span class="coef-var">c</span></label>
+                </div>
+              </div>
+              <p class="form-error" id="error-sistema2" role="alert" hidden></p>
+              <div class="form-actions">
+                <button class="btn btn-primary" type="submit">Resolver y graficar</button>
+                <button class="btn btn-ghost" type="button" data-reset="sistema2">Restablecer</button>
+              </div>
+            </form>
+
+            <div class="examples">
+              <p class="examples-title">Casos del taller</p>
+              <div class="chip-row" data-examples="sistema2"></div>
+            </div>
+            <div class="note-box"><span class="note-mark" aria-hidden="true">i</span><p>Usa el punto o la coma para decimales. También puedes escribir fracciones como <code>1/2</code>.</p></div>
+          </aside>
+
+          <div class="stage">
+            <div class="stage-head">
+              <div class="result-block">
+                <p class="eyebrow eyebrow-light">Resultado</p>
+                <h2 class="result-title" id="result-title-sistema2">Solución única</h2>
+                <p class="result-value" id="result-value-sistema2">(3, 2)</p>
+              </div>
+              <div class="metric-row" id="metrics-sistema2"></div>
+            </div>
+            <figure class="canvas-figure">
+              <canvas id="canvas-sistema2" class="plot" role="img" aria-label="Gráfico de dos rectas y su punto de intersección"></canvas>
+              <div class="canvas-toolbar">
+                <div class="legend" id="legend-sistema2"></div>
+                <button class="icon-btn" type="button" data-download="sistema2" aria-label="Descargar el gráfico como PNG" title="Descargar PNG">
+                  <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 3v9M6.5 8.5 10 12l3.5-3.5M4 15.5h12" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>
+                </button>
+              </div>
+              <figcaption id="caption-sistema2">Vista ajustada a la solución. Cada recta representa una ecuación del sistema.</figcaption>
+            </figure>
+          </div>
+        </div>
+
+        <div class="lower-grid">
+          <section class="steps-card">
+            <div class="section-head"><p class="eyebrow">Paso a paso</p><h3>Eliminación de Gauss</h3></div>
+            <div class="steps" id="steps-sistema2"></div>
+          </section>
+          <aside class="reading-card">
+            <div class="section-head"><p class="eyebrow">Lectura geométrica</p><h3>Qué significa</h3></div>
+            <p class="reading" id="reading-sistema2"></p>
+            <div class="check" id="check-sistema2"></div>
+          </aside>
+        </div>
+      </section>
+
+      <!-- ================= SISTEMA 3×3 ================= -->
+      <section class="module-panel" id="panel-sistema3" role="tabpanel" aria-labelledby="tab-sistema3" hidden>
+        <div class="workbench">
+          <aside class="control-card">
+            <div class="control-head">
+              <p class="eyebrow">Entrada · 3 ecuaciones</p>
+              <h1>Sistema 3×3</h1>
+              <p class="lede">Tres planos en el espacio. Gauss decide si se cortan en un punto, en una recta o en ningún lugar.</p>
+            </div>
+
+            <form id="form-sistema3" novalidate>
+              <div class="equation-block">
+                <div class="equation-top"><span class="equation-name">Ecuación 1</span><span class="equation-preview" data-preview="sistema3-1">2x + y − z = 8</span></div>
+                <div class="coef-row coef-row-3">
+                  <label class="coef"><input id="s3-a1" value="2" inputmode="decimal" autocomplete="off" aria-label="Coeficiente de x en la ecuación 1"><span class="coef-var">x</span></label>
+                  <span class="coef-op">+</span>
+                  <label class="coef"><input id="s3-b1" value="1" inputmode="decimal" autocomplete="off" aria-label="Coeficiente de y en la ecuación 1"><span class="coef-var">y</span></label>
+                  <span class="coef-op">+</span>
+                  <label class="coef"><input id="s3-c1" value="-1" inputmode="decimal" autocomplete="off" aria-label="Coeficiente de z en la ecuación 1"><span class="coef-var">z</span></label>
+                  <span class="coef-op">=</span>
+                  <label class="coef coef-total"><input id="s3-d1" value="8" inputmode="decimal" autocomplete="off" aria-label="Término independiente de la ecuación 1"><span class="coef-var">d</span></label>
+                </div>
+              </div>
+              <div class="equation-block">
+                <div class="equation-top"><span class="equation-name">Ecuación 2</span><span class="equation-preview" data-preview="sistema3-2">−3x − y + 2z = −11</span></div>
+                <div class="coef-row coef-row-3">
+                  <label class="coef"><input id="s3-a2" value="-3" inputmode="decimal" autocomplete="off" aria-label="Coeficiente de x en la ecuación 2"><span class="coef-var">x</span></label>
+                  <span class="coef-op">+</span>
+                  <label class="coef"><input id="s3-b2" value="-1" inputmode="decimal" autocomplete="off" aria-label="Coeficiente de y en la ecuación 2"><span class="coef-var">y</span></label>
+                  <span class="coef-op">+</span>
+                  <label class="coef"><input id="s3-c2" value="2" inputmode="decimal" autocomplete="off" aria-label="Coeficiente de z en la ecuación 2"><span class="coef-var">z</span></label>
+                  <span class="coef-op">=</span>
+                  <label class="coef coef-total"><input id="s3-d2" value="-11" inputmode="decimal" autocomplete="off" aria-label="Término independiente de la ecuación 2"><span class="coef-var">d</span></label>
+                </div>
+              </div>
+              <div class="equation-block">
+                <div class="equation-top"><span class="equation-name">Ecuación 3</span><span class="equation-preview" data-preview="sistema3-3">−2x + y + 2z = −3</span></div>
+                <div class="coef-row coef-row-3">
+                  <label class="coef"><input id="s3-a3" value="-2" inputmode="decimal" autocomplete="off" aria-label="Coeficiente de x en la ecuación 3"><span class="coef-var">x</span></label>
+                  <span class="coef-op">+</span>
+                  <label class="coef"><input id="s3-b3" value="1" inputmode="decimal" autocomplete="off" aria-label="Coeficiente de y en la ecuación 3"><span class="coef-var">y</span></label>
+                  <span class="coef-op">+</span>
+                  <label class="coef"><input id="s3-c3" value="2" inputmode="decimal" autocomplete="off" aria-label="Coeficiente de z en la ecuación 3"><span class="coef-var">z</span></label>
+                  <span class="coef-op">=</span>
+                  <label class="coef coef-total"><input id="s3-d3" value="-3" inputmode="decimal" autocomplete="off" aria-label="Término independiente de la ecuación 3"><span class="coef-var">d</span></label>
+                </div>
+              </div>
+              <p class="form-error" id="error-sistema3" role="alert" hidden></p>
+              <div class="form-actions">
+                <button class="btn btn-primary" type="submit">Resolver y graficar</button>
+                <button class="btn btn-ghost" type="button" data-reset="sistema3">Restablecer</button>
+              </div>
+            </form>
+
+            <div class="examples">
+              <p class="examples-title">Casos del taller</p>
+              <div class="chip-row" data-examples="sistema3"></div>
+            </div>
+            <div class="note-box"><span class="note-mark" aria-hidden="true">i</span><p>La escena 3D se puede girar con el ratón o con las flechas del teclado. Arrastra para orbitar.</p></div>
+          </aside>
+
+          <div class="stage">
+            <div class="stage-head">
+              <div class="result-block">
+                <p class="eyebrow eyebrow-light">Resultado</p>
+                <h2 class="result-title" id="result-title-sistema3">Solución única</h2>
+                <p class="result-value" id="result-value-sistema3">(2, 3, −1)</p>
+              </div>
+              <div class="metric-row" id="metrics-sistema3"></div>
+            </div>
+            <figure class="canvas-figure">
+              <canvas id="canvas-sistema3" class="plot" role="img" tabindex="0" aria-label="Escena 3D con tres planos y su intersección. Arrastra para girar."></canvas>
+              <div class="canvas-toolbar">
+                <div class="legend" id="legend-sistema3"></div>
+                <div class="toolbar-actions">
+                  <button class="text-btn" type="button" data-reset-view="sistema3">Reiniciar vista</button>
+                  <button class="icon-btn" type="button" data-download="sistema3" aria-label="Descargar el gráfico como PNG" title="Descargar PNG">
+                    <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 3v9M6.5 8.5 10 12l3.5-3.5M4 15.5h12" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>
+                  </button>
+                </div>
+              </div>
+              <figcaption id="caption-sistema3">Arrastra para orbitar · rueda para acercar · doble clic para reiniciar.</figcaption>
+            </figure>
+          </div>
+        </div>
+
+        <div class="lower-grid">
+          <section class="steps-card">
+            <div class="section-head"><p class="eyebrow">Paso a paso</p><h3>Matriz aumentada y sustitución regresiva</h3></div>
+            <div class="steps" id="steps-sistema3"></div>
+          </section>
+          <aside class="reading-card">
+            <div class="section-head"><p class="eyebrow">Lectura geométrica</p><h3>Qué significa</h3></div>
+            <p class="reading" id="reading-sistema3"></p>
+            <div class="check" id="check-sistema3"></div>
+          </aside>
+        </div>
+      </section>
+
+      <!-- ================= VECTORES 2D ================= -->
+      <section class="module-panel" id="panel-vectores2" role="tabpanel" aria-labelledby="tab-vectores2" hidden>
+        <div class="workbench">
+          <aside class="control-card">
+            <div class="control-head">
+              <p class="eyebrow">Entrada · vectores en R²</p>
+              <h1>Vectores 2D</h1>
+              <p class="lede">Dos flechas y un escalar. Observa la suma con la regla del paralelogramo, la resta y el ángulo.</p>
+            </div>
+
+            <form id="form-vectores2" novalidate>
+              <div class="vector-block">
+                <span class="vector-name">u</span>
+                <div class="vector-fields">
+                  <label class="coef"><input id="v2-ux" value="-2" inputmode="decimal" autocomplete="off" aria-label="Componente x del vector u"><span class="coef-var">x</span></label>
+                  <label class="coef"><input id="v2-uy" value="1" inputmode="decimal" autocomplete="off" aria-label="Componente y del vector u"><span class="coef-var">y</span></label>
+                </div>
+              </div>
+              <div class="vector-block">
+                <span class="vector-name">v</span>
+                <div class="vector-fields">
+                  <label class="coef"><input id="v2-vx" value="4" inputmode="decimal" autocomplete="off" aria-label="Componente x del vector v"><span class="coef-var">x</span></label>
+                  <label class="coef"><input id="v2-vy" value="3" inputmode="decimal" autocomplete="off" aria-label="Componente y del vector v"><span class="coef-var">y</span></label>
+                </div>
+              </div>
+              <div class="scalar-block">
+                <span class="scalar-name">Escalar <em>k</em></span>
+                <label class="coef scalar-input"><input id="v2-k" value="3" inputmode="decimal" autocomplete="off" aria-label="Escalar k para multiplicar el vector u"><span class="coef-var">k</span></label>
+              </div>
+              <p class="form-error" id="error-vectores2" role="alert" hidden></p>
+              <div class="form-actions">
+                <button class="btn btn-primary" type="submit">Calcular y graficar</button>
+                <button class="btn btn-ghost" type="button" data-reset="vectores2">Restablecer</button>
+              </div>
+            </form>
+
+            <div class="examples">
+              <p class="examples-title">Casos del taller</p>
+              <div class="chip-row" data-examples="vectores2"></div>
+            </div>
+            <div class="note-box"><span class="note-mark" aria-hidden="true">i</span><p>El área del paralelogramo es <code>|det(u, v)|</code>. Si el producto punto es negativo, el ángulo es obtuso.</p></div>
+          </aside>
+
+          <div class="stage">
+            <div class="stage-head">
+              <div class="result-block">
+                <p class="eyebrow eyebrow-light">Resultado</p>
+                <h2 class="result-title" id="result-title-vectores2">Producto punto y ángulo</h2>
+                <p class="result-value" id="result-value-vectores2">u · v = −5</p>
+              </div>
+              <div class="metric-row" id="metrics-vectores2"></div>
+            </div>
+            <figure class="canvas-figure">
+              <canvas id="canvas-vectores2" class="plot" role="img" aria-label="Gráfico de vectores u y v, su suma, resta y paralelogramo"></canvas>
+              <div class="canvas-toolbar">
+                <div class="legend" id="legend-vectores2"></div>
+                <button class="icon-btn" type="button" data-download="vectores2" aria-label="Descargar el gráfico como PNG" title="Descargar PNG">
+                  <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 3v9M6.5 8.5 10 12l3.5-3.5M4 15.5h12" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>
+                </button>
+              </div>
+              <figcaption id="caption-vectores2">La diagonal del paralelogramo es u + v; la otra diagonal es u − v.</figcaption>
+            </figure>
+          </div>
+        </div>
+
+        <div class="lower-grid">
+          <section class="steps-card">
+            <div class="section-head"><p class="eyebrow">Paso a paso</p><h3>Operaciones componente a componente</h3></div>
+            <div class="steps" id="steps-vectores2"></div>
+          </section>
+          <aside class="reading-card">
+            <div class="section-head"><p class="eyebrow">Lectura geométrica</p><h3>Qué significa</h3></div>
+            <p class="reading" id="reading-vectores2"></p>
+            <div class="check" id="check-vectores2"></div>
+          </aside>
+        </div>
+      </section>
+
+      <!-- ================= VECTORES 3D ================= -->
+      <section class="module-panel" id="panel-vectores3" role="tabpanel" aria-labelledby="tab-vectores3" hidden>
+        <div class="workbench">
+          <aside class="control-card">
+            <div class="control-head">
+              <p class="eyebrow">Entrada · vectores en R³</p>
+              <h1>Vectores 3D</h1>
+              <p class="lede">Las mismas operaciones, ahora en el espacio. Gira la escena para ver la suma y la resta desde otro ángulo.</p>
+            </div>
+
+            <form id="form-vectores3" novalidate>
+              <div class="vector-block">
+                <span class="vector-name">u</span>
+                <div class="vector-fields">
+                  <label class="coef"><input id="v3-ux" value="1" inputmode="decimal" autocomplete="off" aria-label="Componente x del vector u"><span class="coef-var">x</span></label>
+                  <label class="coef"><input id="v3-uy" value="3" inputmode="decimal" autocomplete="off" aria-label="Componente y del vector u"><span class="coef-var">y</span></label>
+                  <label class="coef"><input id="v3-uz" value="-2" inputmode="decimal" autocomplete="off" aria-label="Componente z del vector u"><span class="coef-var">z</span></label>
+                </div>
+              </div>
+              <div class="vector-block">
+                <span class="vector-name">v</span>
+                <div class="vector-fields">
+                  <label class="coef"><input id="v3-vx" value="4" inputmode="decimal" autocomplete="off" aria-label="Componente x del vector v"><span class="coef-var">x</span></label>
+                  <label class="coef"><input id="v3-vy" value="0" inputmode="decimal" autocomplete="off" aria-label="Componente y del vector v"><span class="coef-var">y</span></label>
+                  <label class="coef"><input id="v3-vz" value="1" inputmode="decimal" autocomplete="off" aria-label="Componente z del vector v"><span class="coef-var">z</span></label>
+                </div>
+              </div>
+              <div class="scalar-block">
+                <span class="scalar-name">Escalar <em>k</em></span>
+                <label class="coef scalar-input"><input id="v3-k" value="2" inputmode="decimal" autocomplete="off" aria-label="Escalar k para multiplicar el vector u"><span class="coef-var">k</span></label>
+              </div>
+              <p class="form-error" id="error-vectores3" role="alert" hidden></p>
+              <div class="form-actions">
+                <button class="btn btn-primary" type="submit">Calcular y graficar</button>
+                <button class="btn btn-ghost" type="button" data-reset="vectores3">Restablecer</button>
+              </div>
+            </form>
+
+            <div class="examples">
+              <p class="examples-title">Casos del taller</p>
+              <div class="chip-row" data-examples="vectores3"></div>
+            </div>
+            <div class="note-box"><span class="note-mark" aria-hidden="true">i</span><p>La norma mide la longitud de la flecha. El ángulo se calcula con <code>cos θ = (u · v) / (‖u‖‖v‖)</code>.</p></div>
+          </aside>
+
+          <div class="stage">
+            <div class="stage-head">
+              <div class="result-block">
+                <p class="eyebrow eyebrow-light">Resultado</p>
+                <h2 class="result-title" id="result-title-vectores3">Producto punto y ángulo</h2>
+                <p class="result-value" id="result-value-vectores3">u · v = 2</p>
+              </div>
+              <div class="metric-row" id="metrics-vectores3"></div>
+            </div>
+            <figure class="canvas-figure">
+              <canvas id="canvas-vectores3" class="plot" role="img" tabindex="0" aria-label="Escena 3D con los vectores u, v, su suma y su resta. Arrastra para girar."></canvas>
+              <div class="canvas-toolbar">
+                <div class="legend" id="legend-vectores3"></div>
+                <div class="toolbar-actions">
+                  <button class="text-btn" type="button" data-reset-view="vectores3">Reiniciar vista</button>
+                  <button class="icon-btn" type="button" data-download="vectores3" aria-label="Descargar el gráfico como PNG" title="Descargar PNG">
+                    <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 3v9M6.5 8.5 10 12l3.5-3.5M4 15.5h12" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>
+                  </button>
+                </div>
+              </div>
+              <figcaption id="caption-vectores3">Arrastra para orbitar · rueda para acercar · doble clic para reiniciar.</figcaption>
+            </figure>
+          </div>
+        </div>
+
+        <div class="lower-grid">
+          <section class="steps-card">
+            <div class="section-head"><p class="eyebrow">Paso a paso</p><h3>Operaciones en el espacio</h3></div>
+            <div class="steps" id="steps-vectores3"></div>
+          </section>
+          <aside class="reading-card">
+            <div class="section-head"><p class="eyebrow">Lectura geométrica</p><h3>Qué significa</h3></div>
+            <p class="reading" id="reading-vectores3"></p>
+            <div class="check" id="check-vectores3"></div>
+          </aside>
+        </div>
+      </section>
+
+      <!-- ================= PRODUCTO CRUZ ================= -->
+      <section class="module-panel" id="panel-cruz" role="tabpanel" aria-labelledby="tab-cruz" hidden>
+        <div class="workbench">
+          <aside class="control-card">
+            <div class="control-head">
+              <p class="eyebrow">Entrada · vectores en R³</p>
+              <h1>Producto cruz</h1>
+              <p class="lede">Calcula u × v por determinante, comprueba que es perpendicular a ambos y mide el área del paralelogramo.</p>
+            </div>
+
+            <form id="form-cruz" novalidate>
+              <div class="vector-block">
+                <span class="vector-name">u</span>
+                <div class="vector-fields">
+                  <label class="coef"><input id="c-ux" value="1" inputmode="decimal" autocomplete="off" aria-label="Componente x del vector u"><span class="coef-var">x</span></label>
+                  <label class="coef"><input id="c-uy" value="3" inputmode="decimal" autocomplete="off" aria-label="Componente y del vector u"><span class="coef-var">y</span></label>
+                  <label class="coef"><input id="c-uz" value="-2" inputmode="decimal" autocomplete="off" aria-label="Componente z del vector u"><span class="coef-var">z</span></label>
+                </div>
+              </div>
+              <div class="vector-block">
+                <span class="vector-name">v</span>
+                <div class="vector-fields">
+                  <label class="coef"><input id="c-vx" value="4" inputmode="decimal" autocomplete="off" aria-label="Componente x del vector v"><span class="coef-var">x</span></label>
+                  <label class="coef"><input id="c-vy" value="0" inputmode="decimal" autocomplete="off" aria-label="Componente y del vector v"><span class="coef-var">y</span></label>
+                  <label class="coef"><input id="c-vz" value="1" inputmode="decimal" autocomplete="off" aria-label="Componente z del vector v"><span class="coef-var">z</span></label>
+                </div>
+              </div>
+              <div class="vector-block optional-block">
+                <span class="vector-name">w</span>
+                <div class="vector-fields">
+                  <label class="coef"><input id="c-wx" placeholder="—" inputmode="decimal" autocomplete="off" aria-label="Componente x del vector w, opcional"><span class="coef-var">x</span></label>
+                  <label class="coef"><input id="c-wy" placeholder="—" inputmode="decimal" autocomplete="off" aria-label="Componente y del vector w, opcional"><span class="coef-var">y</span></label>
+                  <label class="coef"><input id="c-wz" placeholder="—" inputmode="decimal" autocomplete="off" aria-label="Componente z del vector w, opcional"><span class="coef-var">z</span></label>
+                </div>
+                <span class="optional-tag">opcional · volumen</span>
+              </div>
+              <p class="form-error" id="error-cruz" role="alert" hidden></p>
+              <div class="form-actions">
+                <button class="btn btn-primary" type="submit">Calcular y graficar</button>
+                <button class="btn btn-ghost" type="button" data-reset="cruz">Restablecer</button>
+              </div>
+            </form>
+
+            <div class="examples">
+              <p class="examples-title">Casos del taller</p>
+              <div class="chip-row" data-examples="cruz"></div>
+            </div>
+            <div class="note-box"><span class="note-mark" aria-hidden="true">i</span><p>Si u y v son paralelos, el producto cruz es el vector cero y el área es 0. El vector w es opcional: activa el volumen del paralelepípedo.</p></div>
+          </aside>
+
+          <div class="stage">
+            <div class="stage-head">
+              <div class="result-block">
+                <p class="eyebrow eyebrow-light">Resultado</p>
+                <h2 class="result-title" id="result-title-cruz">Producto vectorial</h2>
+                <p class="result-value" id="result-value-cruz">(3, −9, −12)</p>
+              </div>
+              <div class="metric-row" id="metrics-cruz"></div>
+            </div>
+            <figure class="canvas-figure">
+              <canvas id="canvas-cruz" class="plot" role="img" tabindex="0" aria-label="Escena 3D con u, v, el paralelogramo y el vector u cruz v perpendicular. Arrastra para girar."></canvas>
+              <div class="canvas-toolbar">
+                <div class="legend" id="legend-cruz"></div>
+                <div class="toolbar-actions">
+                  <button class="text-btn" type="button" data-reset-view="cruz">Reiniciar vista</button>
+                  <button class="icon-btn" type="button" data-download="cruz" aria-label="Descargar el gráfico como PNG" title="Descargar PNG">
+                    <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 3v9M6.5 8.5 10 12l3.5-3.5M4 15.5h12" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>
+                  </button>
+                </div>
+              </div>
+              <figcaption id="caption-cruz">Arrastra para orbitar · rueda para acercar · doble clic para reiniciar.</figcaption>
+            </figure>
+          </div>
+        </div>
+
+        <div class="lower-grid">
+          <section class="steps-card">
+            <div class="section-head"><p class="eyebrow">Paso a paso</p><h3>Determinante y verificación</h3></div>
+            <div class="steps" id="steps-cruz"></div>
+          </section>
+          <aside class="reading-card">
+            <div class="section-head"><p class="eyebrow">Lectura geométrica</p><h3>Qué significa</h3></div>
+            <p class="reading" id="reading-cruz"></p>
+            <div class="check" id="check-cruz"></div>
+          </aside>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p><strong>Taller Preparcial · Álgebra Lineal</strong> · CIAF Pereira</p>
+      <p>Programa Desarrollo de Software · Docente Aimer Antonio Rivas Montoya · 2026-2</p>
+    </footer>
+  </div>
+
+  <script type="module" src="js/ui/app.js"></script>
+</body>
+</html>
